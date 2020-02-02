@@ -1,16 +1,9 @@
-package com.company;
-
 import java.io.*;
 import java.net.*;
 
-import com.sun.org.apache.bcel.internal.generic.JsrInstruction;
-import com.sun.org.apache.xerces.internal.impl.xpath.regex.Match;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
-import sun.awt.image.ImageWatched;
-import sun.reflect.generics.tree.Tree;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.util.*;
@@ -54,24 +47,24 @@ public class App {
     }
 
     //returns an ArrayList of JSONObject which are dimensions
-    public LinkedHashMap<String, ArrayList<com.company.Node<JSONObject>>> getTree(JSONObject jsonObject) {
+    public LinkedHashMap<String, ArrayList<Node<JSONObject>>> getTree(JSONObject jsonObject) {
         //System.out.println(jsonObject);
-        LinkedHashMap<String,ArrayList<com.company.Node<JSONObject>>> MemberMap = new LinkedHashMap<String, ArrayList<com.company.Node<JSONObject>>>();
+        LinkedHashMap<String,ArrayList<Node<JSONObject>>> MemberMap = new LinkedHashMap<String, ArrayList<Node<JSONObject>>>();
         ArrayList<JSONObject> dimensions = (ArrayList<JSONObject>) jsonObject.get("dimension");
         for (JSONObject dimension : dimensions){
             ArrayList<JSONObject> members = (ArrayList<JSONObject>) dimension.get("member");
-            com.company.Node<JSONObject> root = new com.company.Node<JSONObject>(null);
-            ArrayList<com.company.Node<JSONObject>> roots = new ArrayList<com.company.Node<JSONObject>>();
+            Node<JSONObject> root = new Node<JSONObject>(null);
+            ArrayList<Node<JSONObject>> roots = new ArrayList<Node<JSONObject>>();
             for (JSONObject temp: members){
                 if(temp.get("parentMemberId")==null){
-                    com.company.Node<JSONObject> NewNode = new com.company.Node<JSONObject>(temp);
-                    root = new com.company.Node<JSONObject>(temp);
+                    Node<JSONObject> newNode = new Node<JSONObject>(temp);
+                    root = new Node<JSONObject>(temp);
                     roots.add(root);
                     MemberMap.put((String)dimension.get("dimensionName" + currLanguage),roots);
                 }
                 else if(temp.get("parentMemberId")!=null){
-                    com.company.Node<JSONObject> NewNode = new com.company.Node<JSONObject>(temp);
-                    root.addChild(root,(long)temp.get("parentMemberId"),NewNode);
+                    Node<JSONObject> newNode = new Node<JSONObject>(temp);
+                    root.addChild(root,(long)temp.get("parentMemberId"), newNode);
                 }
             }
         }
@@ -79,23 +72,23 @@ public class App {
     }
 
     //converts Dimension JSONObject to String
-    public ArrayList<String> convert(ArrayList<com.company.Node<JSONObject>> arr) {
+    public ArrayList<String> convert(ArrayList<Node<JSONObject>> arr) {
         JSONObject temp = new JSONObject();
         ArrayList<String> temparrlist = new ArrayList<String>();
-        for (com.company.Node<JSONObject> json : arr){
+        for (Node<JSONObject> json : arr){
             temparrlist.add((String)((JSONObject)json.getData()).get("memberName"+currLanguage));
         }
         return temparrlist;
     }
 
-    //Search function for MemberMap and InnerNodes
-    public String Search(String NodeName, LinkedHashMap<String,ArrayList<com.company.Node<JSONObject>>> MemberMap) {
+    //Search function for MemberMap and InnerNodeStructures
+    public String Search(String NodeStructureName, LinkedHashMap<String,ArrayList<Node<JSONObject>>> MemberMap) {
         for(String key : MemberMap.keySet()){
-            //System.out.println(NodeName);
+            //System.out.println(NodeStructureName);
             //System.out.println("Inner Key: "+key);
-            for(com.company.Node<JSONObject> root : MemberMap.get(key)){
-                System.out.println(root.Search(root,NodeName, currLanguage));
-                if(root.Search(root, NodeName, currLanguage) != null){
+            for(Node<JSONObject> root : MemberMap.get(key)){
+                System.out.println(root.Search(root,NodeStructureName, currLanguage));
+                if(root.Search(root, NodeStructureName, currLanguage) != null){
                     return key;
                 }
             }
@@ -104,7 +97,7 @@ public class App {
     }
 
     //returns first member of outer dimension
-    public ArrayList<com.company.Node<JSONObject>> getInnerDim(LinkedHashMap<String,ArrayList<com.company.Node<JSONObject>>> MemberMap, String key) {
+    public ArrayList<Node<JSONObject>> getInnerDim(LinkedHashMap<String,ArrayList<Node<JSONObject>>> MemberMap, String key) {
         return MemberMap.get(key);
     }
 
@@ -231,7 +224,7 @@ public class App {
         return null;
     }
 
-    public void SavetoDoc(Boolean Levels,JSONObject MatchCode, LinkedHashMap<String,ArrayList<Node<JSONObject>>> MemberMap, String id, String title){
+    public void SavetoDoc(Boolean Levels, JSONObject MatchCode, LinkedHashMap<String,ArrayList<Node<JSONObject>>> MemberMap, String id, String title){
         BufferedWriter writer = null;
         try {
             //create a temporary file
@@ -250,7 +243,7 @@ public class App {
                 writer.newLine();
                 writer.newLine();
                 writer.write(dim + " : Dimension" );
-                for(com.company.Node<JSONObject> root : MemberMap.get(dim)){
+                for(Node<JSONObject> root : MemberMap.get(dim)){
                         root.Print(Levels,(JSONArray) MatchCode.get("uom"),writer,root,"\t",currLanguage,0);
                 }
             }
@@ -265,7 +258,7 @@ public class App {
         }
     }
 
-    public void SavetoDoc(Boolean Levels,JSONObject MatchCode,LinkedHashMap<String,ArrayList<Node<JSONObject>>> MemberMap, String id, String title, LinkedHashMap<Long,HashMap<Long,String>> FootnoteMap){
+    public void SavetoDoc(Boolean Levels, JSONObject MatchCode, LinkedHashMap<String,ArrayList<Node<JSONObject>>> MemberMap, String id, String title, LinkedHashMap<Long,HashMap<Long,String>> FootnoteMap){
         BufferedWriter writer = null;
         try {
             //create a temporary file
@@ -291,7 +284,7 @@ public class App {
                 writer.newLine();
                 writer.newLine();
                 writer.write(dim + " : Dimension" );
-                for(com.company.Node<JSONObject> root : MemberMap.get(dim)){
+                for(Node<JSONObject> root : MemberMap.get(dim)){
                     if(FootnoteMap.containsKey(i)) {
                         //System.out.println("FNM : " + FootnoteMap.get(i));
                         root.Print(Levels,(JSONArray) MatchCode.get("uom"),writer, root, "\t", currLanguage, 0, FootnoteMap.get(i));

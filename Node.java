@@ -1,5 +1,3 @@
-package com.company;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -44,7 +42,7 @@ class Node<T> {
         }
     }
 
-    public void Print(Boolean Levels,JSONArray jsonMatch,BufferedWriter bf, Node<T> root, String append, String language, int level, HashMap<Long,String> FootNoteMap) {
+    public void Print(Boolean Levels, JSONArray jsonMatch, BufferedWriter bf, Node<T> root, String append, String language, int level, HashMap<Long,String> FootNoteMap) {
         if (root.getData() != null) {
             level+=1;
             JSONObject temp = (JSONObject) root.getData();
@@ -84,7 +82,7 @@ class Node<T> {
         }
     }
 
-    public void Print(Boolean Levels,JSONArray jsonMatch,BufferedWriter bf, Node<T> root, String append, String language, int level) {
+    public void Print(Boolean Levels, JSONArray jsonMatch, BufferedWriter bf, Node<T> root, String append, String language, int level) {
         if (root.getData() != null) {
             level+=1;
             JSONObject temp = (JSONObject) root.getData();

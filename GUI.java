@@ -1,52 +1,35 @@
-package com.company;
-
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import javax.swing.*;
-import javax.swing.plaf.synth.SynthTextAreaUI;
-import javax.xml.soap.Text;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
-import java.lang.reflect.Member;
 import java.nio.charset.Charset;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.*;
-import java.util.concurrent.ForkJoinPool;
-
-import static javafx.application.Application.launch;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class GUI extends Application {
-    private com.company.App model = new com.company.App();
+    private App model = new App();
     private String url = "https://www150.statcan.gc.ca/t1/wds/rest/getCubeMetadata";
     private JSONObject jsonObject;
     private JSONObject CodeSets;
     private ArrayList<String> dimensions = new ArrayList<String>();
-    private ArrayList<com.company.Node<JSONObject>> currMembers = new ArrayList<com.company.Node<JSONObject>>();
+    private ArrayList<Node<JSONObject>> currMembers = new ArrayList<Node<JSONObject>>();
     private Label Header,Header2,Header3,Header4,Header5,Header6,Header7,Data;
     private TextArea Title,ProductId,Classification;
     private Button Submit,Batch,Exit,Copy,StepIn,StepOut;
@@ -59,8 +42,8 @@ public class GUI extends Application {
     private Boolean FootNote = false;
     private Boolean Levels = false;
 
-    //Map with Tree which has keys as Strings and Values which are Arraylist containing JSONObject Nodes
-    private LinkedHashMap<String,ArrayList<com.company.Node<JSONObject>>> MemberMap;
+    //Map with Tree which has keys as Strings and Values which are Arraylist containing JSONObject NodeStructures
+    private LinkedHashMap<String,ArrayList<Node<JSONObject>>> MemberMap;
 
     public void start(Stage primaryStage){
         model.currLanguage = "En";
@@ -374,7 +357,7 @@ public class GUI extends Application {
             public void handle(javafx.event.ActionEvent event) {
                 if((InnerDimensionsList.getSelectionModel().getSelectedIndex() != -1)){
                     if(currMembers.get(InnerDimensionsList.getSelectionModel().getSelectedIndex()).getChildren().size()!=0) {
-                        currMembers = (ArrayList<com.company.Node<JSONObject>>) currMembers.get(InnerDimensionsList.getSelectionModel().getSelectedIndex()).getChildren();
+                        currMembers = (ArrayList<Node<JSONObject>>) currMembers.get(InnerDimensionsList.getSelectionModel().getSelectedIndex()).getChildren();
                     }
                 }
 
