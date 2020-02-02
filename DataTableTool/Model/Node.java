@@ -1,3 +1,5 @@
+package DataTableTool.Model;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -7,11 +9,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-class Node<T> {
+public class Node<T> {
 
-    private T data = null;
+    private T data;
 
-    private List<Node<T>> children = new ArrayList<>();
+    private final List<Node<T>> children = new ArrayList<>();
 
     private Node<T> parent = null;
 
@@ -19,10 +21,9 @@ class Node<T> {
         this.data = data;
     }
 
-    public Node<T> addChild(Node<T> child) {
+    public void addChild(Node<T> child) {
         child.setParent(this);
         this.children.add(child);
-        return child;
     }
 
     public void addChild(Node<T> root, long ID, Node<T> child) {
@@ -30,7 +31,6 @@ class Node<T> {
             JSONObject temp = (JSONObject) root.getData();
             if ((long) temp.get("memberId") == ID) {
                 root.addChild(child);
-                return;
             }
             else {
                 root.getChildren().forEach(each -> addChild(each, ID, child));
@@ -54,7 +54,7 @@ class Node<T> {
                     code2 = (long) (temp.get("memberUomCode"));
                 }
                 if(code1==code2){
-                    UOM = " UOM : "+(String)((JSONObject)i).get("memberUom"+language);
+                    UOM = " UOM : "+ ((JSONObject)i).get("memberUom"+language);
                 }
             }
             try {
@@ -63,8 +63,8 @@ class Node<T> {
                     bf.write(append + "L" + level);
                     bf.newLine();
                 }
-                if (FootNoteMap.containsKey((long) temp.get("memberId"))) {
-                    bf.write(append + temp.get("memberName" + language) + "  Footnote : " + FootNoteMap.get((long) temp.get("memberId"))+UOM);
+                if (FootNoteMap.containsKey(temp.get("memberId"))) {
+                    bf.write(append + temp.get("memberName" + language) + "  Footnote : " + FootNoteMap.get(temp.get("memberId"))+UOM);
                 }
                 else{
                     bf.write(append + temp.get("memberName" + language)+ UOM);
@@ -94,7 +94,7 @@ class Node<T> {
                     code2 = (long) (temp.get("memberUomCode"));
                 }
                 if(code1==code2){
-                    UOM = " UOM : "+(String)((JSONObject)i).get("memberUom"+language);
+                    UOM = " UOM : "+ ((JSONObject)i).get("memberUom"+language);
                 }
             }
             try {
